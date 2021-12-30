@@ -131,13 +131,13 @@ class cityscape(torch.utils.data.Dataset):
 
 if __name__ == '__main__':
     # data = CamVid('/path/to/CamVid/train', '/path/to/CamVid/train_labels', '/path/to/CamVid/class_dict.csv', (640, 640))
-    data = CamVid(['/content/drive/MyDrive/CamVid/train', '/content/drive/MyDrive/CamVid/val'],
-                  ['/content/drive/MyDrive/CamVid/train_labels', '/content/drive/MyDrive/CamVid/val_labels'], '/content/drive/MyDrive/CamVid/class_dict.csv',
-                  (720, 960), loss='crossentropy', mode='val')
+    data = cityscape(['/content/drive/MyDrive/cityscape/train', '/content/drive/MyDrive/cityscape/val'],
+                  ['/content/drive/MyDrive/cityscape/train_labels', '/content/drive/MyDrive/cityscape/val_labels'], '/content/drive/MyDrive/cityscape/class_dict.csv',
+                  (2048, 1024), loss='crossentropy', mode='val')
     from build_BiSeNet import BiSeNet
     from utils import reverse_one_hot, get_label_info, colour_code_segmentation, compute_global_accuracy
 
-    label_info = get_label_info('/content/drive/MyDrive/CamVid/class_dict.csv')
+    label_info = get_label_info('/content/drive/MyDrive/cityscape/class_dict.csv')
     for i, (img, label) in enumerate(data):
         print(label.size())
         print(torch.max(label))
