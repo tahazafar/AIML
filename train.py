@@ -1,7 +1,7 @@
 import argparse
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-from cityscape import cityscape
+from CamVid import CamVid
 import os
 from build_BiSeNet import BiSeNet
 import torch
@@ -120,8 +120,8 @@ def main(params):
     parser.add_argument('--checkpoint_step', type=int, default=1, help='How often to save checkpoints (epochs)')
     parser.add_argument('--validation_step', type=int, default=1, help='How often to perform validation (epochs)')
     parser.add_argument('--dataset', type=str, default="cityscape", help='Dataset you are using.')
-    parser.add_argument('--crop_height', type=int, default=2048, help='Height of cropped/resized input image to network')
-    parser.add_argument('--crop_width', type=int, default=1024, help='Width of cropped/resized input image to network')
+    parser.add_argument('--crop_height', type=int, default=720, help='Height of cropped/resized input image to network')
+    parser.add_argument('--crop_width', type=int, default=960, help='Width of cropped/resized input image to network')
     parser.add_argument('--batch_size', type=int, default=1, help='Number of images in each batch')
     parser.add_argument('--context_path', type=str, default="resnet101",
                         help='The context path model you are using, resnet18, resnet101.')
@@ -144,7 +144,7 @@ def main(params):
     test_path = os.path.join(args.data, 'test')
     test_label_path = os.path.join(args.data, 'test_labels')
     csv_path = os.path.join(args.data, 'class_dict.csv')
-    dataset_train = cityscape(train_path, train_label_path, csv_path, scale=(args.crop_height, args.crop_width),
+    dataset_train = CamVid(train_path, train_label_path, csv_path, scale=(args.crop_height, args.crop_width),
                            loss=args.loss, mode='train')
     dataloader_train = DataLoader(
         dataset_train,
@@ -153,7 +153,7 @@ def main(params):
         num_workers=args.num_workers,
         drop_last=True
     )
-    dataset_val = cityscape(test_path, test_label_path, csv_path, scale=(args.crop_height, args.crop_width),
+    dataset_val = CamVid(test_path, test_label_path, csv_path, scale=(args.crop_height, args.crop_width),
                          loss=args.loss, mode='test')
     dataloader_val = DataLoader(
         dataset_val,
@@ -196,14 +196,15 @@ if __name__ == '__main__':
     params = [
         '--num_epochs', '2',
         '--learning_rate', '2.5e-2',
-        '--data', '/content/drive/MyDrive/cityscape',
+        '--data', '/content/drive/MyDrive/CamVid',
         '--num_workers', '0',
         '--num_classes', '12',
         '--cuda', '0',
-        '--batch_size', '6',  # 6 for resnet101, 12 for resnet18
-        '--save_model_path', '/content/drive/MyDrive/cityscape',
+        '--batch_size', '2',  # 6 for resnet101, 12 for resnet18
+        '--save_model_path', '/content/drive/MyDrive/CamVid',
         '--context_path', 'resnet101',  # only support resnet18 and resnet101
         '--optimizer', 'sgd',
 
     ]
     main(params)
+
