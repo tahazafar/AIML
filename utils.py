@@ -59,7 +59,7 @@ def one_hot_it_v11(label, label_info):
 	# from 0 to 11, and 11 means void
 	class_index = 0
 	for index, info in enumerate(label_info):
-		color = label_info[info][:1]  #1 not 3
+		color = label_info[info][:3]  #1 not 3
 		class_11 = label_info[info][3]
 		if class_11 == 1:
 			# colour_map = np.full((label.shape[0], label.shape[1], label.shape[2]), colour, dtype=int)
