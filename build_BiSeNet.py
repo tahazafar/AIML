@@ -4,6 +4,7 @@ from build_contextpath import build_contextpath
 import warnings
 warnings.filterwarnings(action='ignore')
 
+
 class ConvBlock(torch.nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=2,padding=1):
         super().__init__()
@@ -14,6 +15,7 @@ class ConvBlock(torch.nn.Module):
     def forward(self, input):
         x = self.conv1(input)
         return self.relu(self.bn(x))
+
 
 class Spatial_path(torch.nn.Module):
     def __init__(self):
@@ -27,6 +29,7 @@ class Spatial_path(torch.nn.Module):
         x = self.convblock2(x)
         x = self.convblock3(x)
         return x
+
 
 class AttentionRefinementModule(torch.nn.Module):
     def __init__(self, in_channels, out_channels):
@@ -42,8 +45,8 @@ class AttentionRefinementModule(torch.nn.Module):
         x = self.avgpool(input)
         assert self.in_channels == x.size(1), 'in_channels and out_channels should all be {}'.format(x.size(1))
         x = self.conv(x)
-        # x = self.sigmoid(self.bn(x))
-        x = self.sigmoid(x)
+        x = self.sigmoid(self.bn(x))
+        #x = self.sigmoid(x)
         # channels of input and x should be same
         x = torch.mul(input, x)
         return x
@@ -53,8 +56,8 @@ class FeatureFusionModule(torch.nn.Module):
     def __init__(self, num_classes, in_channels):
         super().__init__()
         # self.in_channels = input_1.channels + input_2.channels
-        # resnet101 3328 = 256(from context path) + 1024(from spatial path) + 2048(from spatial path)
-        # resnet18  1024 = 256(from context path) + 256(from spatial path) + 512(from spatial path)
+        # resnet101 3328 = 256(from spatial path) + 1024(from context path) + 2048(from context path)
+        # resnet18  1024 = 256(from spatial path) + 256(from context path) + 512(from context path)
         self.in_channels = in_channels
 
         self.convblock = ConvBlock(in_channels=self.in_channels, out_channels=num_classes, stride=1)
@@ -76,6 +79,7 @@ class FeatureFusionModule(torch.nn.Module):
         x = torch.mul(feature, x)
         x = torch.add(x, feature)
         return x
+
 
 class BiSeNet(torch.nn.Module):
     def __init__(self, num_classes, context_path):
