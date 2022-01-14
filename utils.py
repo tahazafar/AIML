@@ -16,7 +16,6 @@ def poly_lr_scheduler(optimizer, init_lr, iter, lr_decay_iter=1,
 		:param lr_decay_iter how frequently decay occurs, default is 1
 		:param max_iter is number of maximum iterations
 		:param power is a polymomial power
-
 	"""
 	# if iter % lr_decay_iter or iter > max_iter:
 	# 	return optimizer
@@ -100,10 +99,8 @@ def reverse_one_hot(image):
 	Transform a 2D array in one-hot format (depth is num_classes),
 	to a 2D array with only 1 channel, where each pixel value is
 	the classified class key.
-
 	# Arguments
 		image: The one-hot format image
-
 	# Returns
 		A 2D array with the same width and height as the input, but
 		with a depth size of 1, where each pixel value is the classified
@@ -125,11 +122,9 @@ def reverse_one_hot(image):
 def colour_code_segmentation(image, label_values):
 	"""
     Given a 1-channel array of class keys, colour code the segmentation results.
-
     # Arguments
         image: single channel array where each value represents the class key.
         label_values
-
     # Returns
         Colour coded image for segmentation visualization
     """
@@ -173,7 +168,6 @@ def per_class_iu(hist):
 
 class RandomCrop(object):
 	"""Crop the given PIL Image at a random location.
-
 	Args:
 		size (sequence or int): Desired output size of the crop. If size is an
 			int instead of sequence like (h, w), a square crop (size, size) is
@@ -198,11 +192,9 @@ class RandomCrop(object):
 	@staticmethod
 	def get_params(img, output_size, seed):
 		"""Get parameters for ``crop`` for a random crop.
-
 		Args:
 			img (PIL Image): Image to be cropped.
 			output_size (tuple): Expected output size of the crop.
-
 		Returns:
 			tuple: params (i, j, h, w) to be passed to ``crop`` for random crop.
 		"""
@@ -219,7 +211,6 @@ class RandomCrop(object):
 		"""
 		Args:
 			img (PIL Image): Image to be cropped.
-
 		Returns:
 			PIL Image: Cropped image.
 		"""
@@ -292,4 +283,5 @@ def group_weight(weight_group, module, norm_layer, lr):
 		group_no_decay)
 	weight_group.append(dict(params=group_decay, lr=lr))
 	weight_group.append(dict(params=group_no_decay, weight_decay=.0, lr=lr))
-	return weight_group
+	return 
+

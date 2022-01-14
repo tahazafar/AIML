@@ -12,7 +12,7 @@ from utils import reverse_one_hot, compute_global_accuracy, fast_hist, \
     per_class_iu
 from loss import DiceLoss
 import torch.cuda.amp as amp
-from cityscapes import cityscapes
+from cityscapes import CityscapesDataset
 
 
 def val(args, model, dataloader):
@@ -158,11 +158,25 @@ def main(params):
     #test_label_path = os.path.join(args.data, 'test_labels')
     #csv_path = os.path.join(args.data, 'class_dict.csv')
     
+
     # Define here your dataloaders
     # dataloader_train
     # dataloader_val
-    testloader = data.DataLoader(cityscapes(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
-                                    batch_size=1, shuffle=False, pin_memory=True)
+    #testloader = data.DataLoader(CityscapesDataset(args.data_dir, args.data_list, crop_size=(1024, 512), scale=False, mirror=False, set=args.set),
+    #                               batch_size=1, shuffle=False, pin_memory=True)
+
+    # create dataset and dataloader
+    train_path = [os.path.join(args.data, 'train')]
+    train_label_path = [os.path.join(args.data, 'labels')]
+    
+    dataset_train = CityscapesDataset(train_path, train_label_path, scale=(args.crop_height, args.crop_width))
+    dataloader_train = DataLoader(
+        dataset_train,
+        batch_size=args.batch_size,
+        shuffle=True,
+        num_workers=args.num_workers,
+        drop_last=True
+    )
 
     # build model
     os.environ['CUDA_VISIBLE_DEVICES'] = args.cuda
@@ -208,4 +222,3 @@ if __name__ == '__main__':
 
     ]
     main(params)
-

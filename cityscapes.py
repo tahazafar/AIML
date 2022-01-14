@@ -8,30 +8,41 @@ import torch
 import torchvision
 from torch.utils import data
 from PIL import Image
+import json
 
-class cityscapes(data.Dataset):
-    def __init__(self, root, list_path, max_iters=None, crop_size=(321, 321), mean=(128, 128, 128), scale=True, mirror=True, ignore_label=255, set='val'):
+
+class CityscapesDataset(data.Dataset):
+    def __init__(self, root, list_path, max_iters=None, train=True, crop_size=(321, 321), mean=(128, 128, 128), scale=True, mirror=True, ignore_label=255):
         self.root = root
         self.list_path = list_path
         self.crop_size = crop_size
         self.scale = scale
         self.ignore_label = ignore_label
         self.mean = mean
+        self.set = 'train' if self.train else 'val'
         self.is_mirror = mirror
+
+
         # self.mean_bgr = np.array([104.00698793, 116.66876762, 122.67891434])
-        self.img_ids = [i_id.strip() for i_id in open(list_path)]
-        if not max_iters==None:
+        #self.img_ids = [i_id.strip() for i_id in open(list_path)]
+        #if not max_iters==None:
+        #    self.img_ids = self.img_ids * int(np.ceil(float(max_iters) / len(self.img_ids)))
+        #self.files = []
+
+        if self.train:
+            self.img_ids = [i_id.strip() for i_id in open('/content/drive/MyDrive/cityscape/train.txt')]
+        else:
+            self.img_ids = [i_id.strip() for i_id in open('/content/drive/MyDrive/cityscape/val.txt')]
+        if max_iters is not None:
             self.img_ids = self.img_ids * int(np.ceil(float(max_iters) / len(self.img_ids)))
-        self.files = []
+        self.info = json.load(open('/content/drive/MyDrive/cityscape/info.json', 'r'))
+        self.class_mapping = self.info['label2train']
 
         self.id_to_trainid = {7: 0, 8: 1, 11: 2, 12: 3, 13: 4, 17: 5,
                               19: 6, 20: 7, 21: 8, 22: 9, 23: 10, 24: 11, 25: 12,
                               26: 13, 27: 14, 28: 15, 31: 16, 32: 17, 33: 18}
 
 
-
-
-    
         self.set = set
         # for split in ["train", "trainval", "val"]:
         for name in self.img_ids:
@@ -66,7 +77,3 @@ class cityscapes(data.Dataset):
         image = image.transpose((2, 0, 1))
 
         return image.copy(), np.array(size), name
-
-        
-
-     
