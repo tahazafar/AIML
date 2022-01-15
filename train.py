@@ -162,12 +162,13 @@ def main(params):
     # Define here your dataloaders
     # dataloader_train
     # dataloader_val
-    #testloader = data.DataLoader(CityscapesDataset(args.data_dir, args.data_list, crop_size=(1024, 512), scale=False, mirror=False, set=args.set),
-    #                               batch_size=1, shuffle=False, pin_memory=True)
+    train_path = [os.path.join(args.data, '/content/drive/MyDrive/train')]
+    train_label_path = [os.path.join(args.data, '/content/drive/MyDrive/labels')]
+    testloader = data.DataLoader(CityscapesDataset(train_path, train_label_path, scale=False, mirror=False)
 
     # create dataset and dataloader
-    train_path = [os.path.join(args.data, 'train')]
-    train_label_path = [os.path.join(args.data, 'labels')]
+    #train_path = [os.path.join(args.data, 'train')]
+    #train_label_path = [os.path.join(args.data, 'labels')]
     
     dataset_train = CityscapesDataset(train_path, train_label_path, scale=(args.crop_height, args.crop_width))
     dataloader_train = DataLoader(
